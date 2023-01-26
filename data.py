@@ -1,6 +1,3 @@
-# """
-# load data from datasets according to federated learning requirement
-# """
 import os
 import torch
 import random

@@ -85,7 +85,7 @@ class LocalUpdate(object):
 
         epoch_loss = []
         epoch_regular = []
-        # set optimizer for local updates
+
         optimizer = use_optimizer(model, self.args)
         epochs = self.args.local_epoch
         all_local_items = []
@@ -109,7 +109,7 @@ class LocalUpdate(object):
             if len(batch_regular) != 0:
                 epoch_regular.append(sum(batch_regular) / len(batch_regular))
         all_local_items = list(set(all_local_items))
-        # add ldp noise
+
         if defend_method == "ldp":
             current_model_dict = copy.deepcopy(model.state_dict())
             old_model_dict = copy.deepcopy(received_model_dict)

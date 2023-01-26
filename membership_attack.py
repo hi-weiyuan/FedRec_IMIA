@@ -21,7 +21,6 @@ class Config(object):
         self.use_popularity = False
         self.lam = 0.9
 
-        # original fed learning hyper-parameters
         self.select_ratio = 0.2
         self.batch_size = run_config.local_bs
         self.shuffle = True

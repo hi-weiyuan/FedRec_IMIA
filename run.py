@@ -14,38 +14,36 @@ import math
 
 class Arguments(object):
     def __init__(self):
-        # general federated settings
         self.data_name = "ml-100k"
         self.data_dir = "dataset/ml-100k"
         self.graph_path = "graphs/ml-100k.pkl"
         self.random_data_save_path = "dataset/ml-100k/processed/neg_sample_{}.pkl"
         self.model_type = "NCF"
         self.model_dir = "save/" + self.model_type +  "_HR{:.4f}_NDCG{:.4f}.model"   # model save place
-        self.global_epoch = 200  # global rounds of training
-        self.local_epoch = 20  # local training epoch
+        self.global_epoch = 200
+        self.local_epoch = 20
         self.use_cuda = torch.cuda.is_available()
         self.device_id = "cuda:1"
-        self.num_users = 943  # ml-100k user number-943
-        self.num_items = 1682 # ml-100k item numer-1682
+        self.num_users = 943
+        self.num_items = 1682
         self.lightGCN_n_layers = 1
         self.layers = [128, 64, 32]
-        self.num_negative = 4   # pos:neg = 1:4
-        self.latent_dim = 64  # embedding dim
-        self.client_frac = 0.01  # fraction of clients who attend training
+        self.num_negative = 4
+        self.latent_dim = 64
+        self.client_frac = 0.01
         self.local_bs = 64
         self.lr = 0.001
         self.optimizer = "adam"
-        self.seed = 42   # one of my favorite num of seeds haha
+        self.seed = 42
 
         self.save_all_model = True
         self.train_with_test = True
 
         self.need_fed_train = False
 
-        # defend method
-        self.defend_method = "none"   # ldp, user_enhanced, None
-        self.std = 0.001  # noise scale, for ldp
-        self.mu = 0.1  # factor to control regularization of item updates.
+        self.defend_method = "none"
+        self.std = 0.001
+        self.mu = 0.1
 
 
 def fl_train(engine, train_loader, rating_lib, evaluate_data, config):
@@ -97,14 +95,12 @@ def fl_train(engine, train_loader, rating_lib, evaluate_data, config):
     return all_global_models, all_client_models, test_time_cost, all_hits_ndcg, all_client_items, all_client_train_data
 
 def run():
-    # step1: set parameters, set random seeds
     config = Arguments()
     print(config.__dict__)
     random.seed(config.seed)
     np.random.seed(config.seed)
     torch.manual_seed(config.seed)
 
-    # step2: construct data
     if config.model_type == "LightGCN":
         from model import LightGCNEngine
         engine = LightGCNEngine(config)
@@ -112,7 +108,6 @@ def run():
         from model import MLPEngine
         engine = MLPEngine(config)
 
-    # generate training data
     print(config.random_data_save_path.format(str(config.num_negative)))
     if not os.path.exists(config.random_data_save_path.format(str(config.num_negative))):
         from data_preprocess import generate_random_data
@@ -128,7 +123,6 @@ def run():
     if config.model_type == "LightGCN":
         engine._init_graph(train_loader, rating_lib)
 
-    # step 3: train
     start_time = time.time()
     all_global_models, all_client_models, test_cost_time, hits_ndcgs, all_client_items, all_client_train_data = fl_train(engine, train_loader, rating_lib, evaluate_data, config)
     end_time = time.time()
