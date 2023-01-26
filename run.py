@@ -1,3 +1,4 @@
+import os
 import copy
 import pickle
 
@@ -15,15 +16,15 @@ class Arguments(object):
     def __init__(self):
         # general federated settings
         self.data_name = "ml-100k"
-        self.data_dir = "dataset/ml-100k" # note
+        self.data_dir = "dataset/ml-100k"
         self.graph_path = "graphs/ml-100k.pkl"
-        self.random_data_save_path = "dataset/ml-100k/processed/neg_sample_{}.pkl" # note
+        self.random_data_save_path = "dataset/ml-100k/processed/neg_sample_{}.pkl"
         self.model_type = "NCF"
-        self.model_dir = "save/" + self.model_type +  "_HR{:.4f}_NDCG{:.4f}.model"   # model save place # note
+        self.model_dir = "save/" + self.model_type +  "_HR{:.4f}_NDCG{:.4f}.model"   # model save place
         self.global_epoch = 200  # global rounds of training
-        self.local_epoch = 20  # local training epoch # note
+        self.local_epoch = 20  # local training epoch
         self.use_cuda = torch.cuda.is_available()
-        self.device_id = "cuda:1"  # note
+        self.device_id = "cuda:1"
         self.num_users = 943  # ml-100k user number-943
         self.num_items = 1682 # ml-100k item numer-1682
         self.lightGCN_n_layers = 1
@@ -43,8 +44,8 @@ class Arguments(object):
 
         # defend method
         self.defend_method = "none"   # ldp, user_enhanced, None
-        self.std = 0.001  # note: noise scale, for ldp
-        self.mu = 0.7  # note: factor to control regularization of item updates.
+        self.std = 0.001  # noise scale, for ldp
+        self.mu = 0.1  # factor to control regularization of item updates.
 
 
 def fl_train(engine, train_loader, rating_lib, evaluate_data, config):
@@ -111,7 +112,12 @@ def run():
         from model import MLPEngine
         engine = MLPEngine(config)
 
+    # generate training data
     print(config.random_data_save_path.format(str(config.num_negative)))
+    if not os.path.exists(config.random_data_save_path.format(str(config.num_negative))):
+        from data_preprocess import generate_random_data
+        generate_random_data(config)
+
     with open(config.random_data_save_path.format(str(config.num_negative)), "rb") as f:
         stored_data = pickle.load(f)
         train_loader = stored_data["train_loader"]

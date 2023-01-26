@@ -1,8 +1,4 @@
 import math
-# fixme:
-# import ray
-# ray.init(num_cpus=2)
-# import modin.pandas as pd
 import pandas as pd
 
 class Metrics(object):

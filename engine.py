@@ -6,8 +6,7 @@ import numpy as np
 import pandas as pd
 import torch
 import os
-# from tensorboardX import SummaryWriter
-import functools
+
 from utils import use_optimizer, fedavg
 from update import LocalUpdate
 from metrics import Metrics
@@ -15,7 +14,7 @@ from data import SampleGenerator
 from scipy.sparse import csr_matrix
 import scipy.sparse as sp
 from tqdm import tqdm
-# from eval_tool import evalAll, get_performance
+
 
 class Engine(object):
     def __init__(self, config):
@@ -90,7 +89,7 @@ class Engine(object):
         else:
             u_ids = [i for i in range(self.config.num_users)]
             self.graphs = {}
-            for idx in tqdm(u_ids):
+            for idx in tqdm(u_ids):  # generate local bipartite graph
                 self.graphs[idx] = self.get_graph(train_loader, rating_lib[idx])
             tmp = copy.deepcopy(self.graphs)
             tmp = {k: v.to("cpu") for k, v in tmp.items()}

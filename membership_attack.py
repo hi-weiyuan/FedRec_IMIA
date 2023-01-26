@@ -8,11 +8,12 @@ import pickle
 import copy
 
 from tqdm import tqdm
+from run import Arguments
 
 class Config(object):
     def __init__(self):
-        self.model_path = "./save/XXXXX.model"
-        self.data_path = "dataset/steam-200k/processed/neg_sample_4.pkl"
+        run_config = Arguments()
+        self.model_path = ""  # model save place
 
         self.unknown_user_init_method = True
         self.same_distribution = False
@@ -21,24 +22,21 @@ class Config(object):
         self.lam = 0.9
 
         # original fed learning hyper-parameters
-        self.select_ratio = 0.2  # 1 / (1 + 4)
-        self.batch_size = 64
+        self.select_ratio = 0.2
+        self.batch_size = run_config.local_bs
         self.shuffle = True
-        self.lr = 0.001
-        self.local_epoch = 20
+        self.lr = run_config.lr
+        self.local_epoch = run_config.local_epoch
         self.device_type = "cuda:3"
 
-        self.model_type = "LightGCN"
+        self.model_type = run_config.model_type
 
         print(self.__dict__)
-        with open("dataset/steam-200k/processed/neg_sample_4.pkl", "rb") as f:
+        with open(run_config.random_data_save_path.format(str(run_config.num_negative)), "rb") as f:
             self.stored_data = pickle.load(f)
-            self.train_loader = self.stored_data["train_loader"]
-            self.rating_lib = self.stored_data["rating_lib"]
-            self.evaluate_data = self.stored_data["evaluate_data"]
-            self.user_pos_neg = self.stored_data["user_pos_neg"]
+            self.user_pos_neg = self.stored_data["user_pos_neg"]  # real interaction data
         if self.model_type == "LightGCN":
-            with open("./graphs/steam-200k.pkl", "rb") as f:
+            with open(run_config.graph_path, "rb") as f:
                 self.graphs = pickle.load(f)
             self.graphs = {k: v.to(self.device_type) for k, v in self.graphs.items()}
 
@@ -94,7 +92,6 @@ def IMIA(config):
         random_select = all_item[:int(len(all_item) * config.select_ratio)]
         print(f"user {u_id}, find at epoch {idx}, pos length {len(pos)}, select length {len(random_select)}, the p is {p}, the r is {r}, and the f is {f}")
         p = len(set(random_select).intersection(set(pos))) / len(random_select)
-        # print(f"pos length {len(pos)}, select length {len(random_select)}, all item length {len(all_item)}")
         r = len(set(random_select).intersection(set(pos))) / len(pos)
         if p + r == 0:
             f = 0

@@ -115,25 +115,4 @@ class SampleGenerator(object):
                 negative_items.append(int(row.negative_samples[i]))
         return [torch.LongTensor(test_users), torch.LongTensor(test_items), torch.LongTensor(negative_users),
                 torch.LongTensor(negative_items)]
-class Config_test:
-    def __init__(self):
-        self.data_name = "ml-100k"
-        self.data_dir = "dataset/ml-100k"
-# test => pass
-if __name__ == '__main__':
 
-    config = Config_test()
-    s_g = SampleGenerator(config)
-    print(s_g.train_ratings.head())
-    print(s_g.negatives.head())
-    print(len(s_g.user_pool))
-    print(len(s_g.item_pool))
-    test_users, test_items, neg_test_users, neg_test_items = s_g.evaluate_data
-    print(test_users.size())
-    print(test_items.size())
-    print(neg_test_users.size())
-    print(neg_test_items.size())
-    print(test_users[0])
-    print(test_items[0])
-    print(neg_test_users[:100])
-    print(neg_test_items[:99])

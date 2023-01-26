@@ -2,10 +2,10 @@ import pickle
 from data import SampleGenerator
 import numpy as np
 
-def generate_random_data():
+def generate_random_data(config):
     print("randomly generate training data")
-    from run import Arguments
-    config = Arguments()
+    # from run import Arguments
+    # config = Arguments()
     sample_generator = SampleGenerator(config)
     train_loader, rating_lib, user_pos_neg = sample_generator.init_train_data_for_fed_rec(config.num_negative)
     evaluate_data = sample_generator.evaluate_data
@@ -20,4 +20,4 @@ def generate_random_data():
         pickle.dump(store_data, f)
     print("finish")
 
-generate_random_data()
+# generate_random_data()
