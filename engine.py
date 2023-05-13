@@ -68,7 +68,7 @@ class Engine(object):
         users = [users[i] for i in old_rating_lib]
         items = [items[i] for i in old_rating_lib]
         ratings = [ratings[i] for i in old_rating_lib]
-        # print()  # df[(df.BoolCol==3)&(df.attr==22)]
+
         pos_u = []
         pos_i = []
         for idx, r in enumerate(ratings):
@@ -140,10 +140,9 @@ class Engine(object):
 
             if self.config.model_type == "LightGCN":
                 test_scores = []
-                # print(test_users.size(0))
+
                 for i in range(test_users.size(0)):
                     test_s = self.model(test_users[i], test_items[i], self.graphs[test_users[i].item()]).cpu()
-                    # print("test_s size:", test_s)
                     test_scores.append(test_s)
 
                 negative_scores = []
