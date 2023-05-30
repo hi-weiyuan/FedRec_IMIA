@@ -1,5 +1,5 @@
 # FedRec_IMIA
-Implementation for the paper [Interaction-level Membership Inference Attack Against Federated Recommender Systems](https://arxiv.org/abs/2301.10964).
+Implementation for the WWW'23 paper [Interaction-level Membership Inference Attack Against Federated Recommender Systems](https://arxiv.org/abs/2301.10964).
 
 # How to use
 *To convenient the experiment, all clients' models are stored during training process.
