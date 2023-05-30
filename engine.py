@@ -116,7 +116,6 @@ class Engine(object):
             local_losses.append(copy.deepcopy(loss))
             user_embedding_lib[idx] = user_em
 
-        # fed avg
         global_weights = fedavg(list(clients_model_and_ids.values()))
 
         state_dict = {'embedding_user.weight': user_embedding_lib}

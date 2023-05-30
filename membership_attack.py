@@ -105,7 +105,6 @@ def IMIA(config):
     print(f"random performance: p: {sum(random_plist) / len(random_plist)}, r: {sum(random_rlist) / len(random_rlist)}, f1: {sum(random_flist) / len(random_flist)}")
 
 def IMIA_for_one_user(config, user_id, user_pos_neg, global_model, client_models, client_items):
-    # print(client_models.keys())
     neg, pos = user_pos_neg[user_id]
     all_items = list(set(pos)) + list(set(neg))
     confirmed_pos = []
@@ -116,7 +115,6 @@ def IMIA_for_one_user(config, user_id, user_pos_neg, global_model, client_models
     no_random_selected = un_confirmed[int(config.select_ratio * len(un_confirmed)):]
     while len(confirmed_pos) < int(config.select_ratio * len(all_items)) or len(un_confirmed) > int(config.select_ratio * len(all_items)):
         users = [user_id] * len(all_items)
-        # print(f"users len: {len(users)}, all item len {len(all_items)}, set all item len {len(list(set(all_items)))}")
         new_items = random_selected + no_random_selected
         new_ratings = [1] * len(random_selected) + [0] * len(no_random_selected)
         idxes = [i for i in range(len(users))]

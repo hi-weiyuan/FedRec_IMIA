@@ -115,7 +115,6 @@ class LocalUpdate(object):
             old_model_dict = copy.deepcopy(received_model_dict)
             for layer in current_model_dict.keys():
                 if layer != "embedding_user.weight":
-                    # print("use local dp")
                     grad = current_model_dict[layer] - received_model_dict[layer]
                     if layer == "embedding_item.weight":
                         grad = grad[torch.Tensor(all_local_items).long()]

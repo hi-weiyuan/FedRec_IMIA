@@ -45,10 +45,8 @@ class Metrics(object):
     def cal_hit_ratio(self):
         """Hit Ratio @ top_K"""
         full, top_k = self._subjects, self._top_k
-        # print(full)
         top_k = full[full['rank'] <= top_k]
         test_in_top_k = top_k[top_k['test_item'] == top_k['item']]  # golden items hit in the top_K items
-        # print(test_in_top_k)
         return len(test_in_top_k) * 1.0 / full['user'].nunique()
 
 

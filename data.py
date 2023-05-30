@@ -68,12 +68,12 @@ class SampleGenerator(object):
             columns={'itemId': 'interacted_items'})
         interact_status['negative_items'] = interact_status['interacted_items'].apply(lambda x: self.item_pool - x)
         interact_status['negative_samples'] = interact_status['negative_items'].apply(lambda x: random.sample(x, 99))
-        return interact_status[['userId', 'negative_items', 'negative_samples']]  # negative_samples是evaluation时候用的
+        return interact_status[['userId', 'negative_items', 'negative_samples']]
 
     def init_train_data_for_fed_rec(self, num_negatives):
         users, items, ratings = [], [], []
         train_ratings = pd.merge(self.train_ratings, self.negatives[["userId", "negative_items"]], on="userId")
-        train_ratings["negatives"] = train_ratings["negative_items"].apply(lambda x: random.sample(x, num_negatives))  # 为每个sample随机采样n个negative sample
+        train_ratings["negatives"] = train_ratings["negative_items"].apply(lambda x: random.sample(x, num_negatives))
         rating_lib = {}
         user_pos_neg = {}
         index = 0

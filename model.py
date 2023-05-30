@@ -2,7 +2,6 @@
 import torch
 import torch.nn as nn
 from engine import Engine
-import numpy as np
 
 
 
@@ -50,7 +49,6 @@ class MLP(torch.nn.Module):
             results = []
             for u_ids in u_ids_batches:
                 batch_size = len(u_ids)
-                # print("batch size", batch_size)
                 item_embedding =self.embedding_item(all_i_ids) if all_i_ids is not None else self.embedding_item.weight  # [item, n]
                 item_total, dim = item_embedding.size()
                 user_embedding = self.embedding_user(u_ids)  # [B, n]
@@ -84,8 +82,6 @@ class LightGCN(torch.nn.Module):
         self.embedding_item = torch.nn.Embedding(
             num_embeddings=self.num_items, embedding_dim=self.latent_dim)
 
-        # self.affine_output = torch.nn.Linear(in_features=self.latent_dim * 2, out_features=1)
-            # random normal init seems to be a better choice when lightGCN actually don't use any non-linear activation function
         nn.init.normal_(self.embedding_user.weight, std=0.1)
         nn.init.normal_(self.embedding_item.weight, std=0.1)
         self.fc_layers = torch.nn.ModuleList()
@@ -103,13 +99,11 @@ class LightGCN(torch.nn.Module):
         users_emb = self.embedding_user.weight
         items_emb = self.embedding_item.weight
         all_emb = torch.cat([users_emb, items_emb])
-        #   torch.split(all_emb , [self.num_users, self.num_items])
         embs = [all_emb]
         for layer in range(self.n_layers):
             all_emb = torch.sparse.mm(g_droped, all_emb)
             embs.append(all_emb)
         embs = torch.stack(embs, dim=1)
-        # print(embs.size())
         light_out = torch.mean(embs, dim=1)
         users, items = torch.split(light_out, [self.num_users, self.num_items])
         return users, items

@@ -14,7 +14,6 @@ def generate_random_data(config):
                   "evaluate_data": evaluate_data,
                   "user_pos_neg": user_pos_neg}
 
-    print(config.random_data_save_path.format(str(config.num_negative)))
     with open(config.random_data_save_path.format(str(config.num_negative)), "wb") as f:
         pickle.dump(store_data, f)
     print("finish")
