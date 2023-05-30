@@ -13,7 +13,7 @@ def use_optimizer(network, params):
                                         alpha=params.rmsprop_alpha,
                                         momentum=params.rmsprop_momentum)
     else:
-        raise ImportError(f"we don't implement {params.optimizer}, we only have [sgd, adam, rmsprop]")
+        raise ImportError(f"we don't implement {params.optimizer}, please use [sgd, adam, rmsprop]")
     return optimizer
 
 
